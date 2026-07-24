@@ -16,7 +16,7 @@ function print-launch-message() {
 		"$title" "$subtitle"
 }
 
-# tip_dirにある*.meta.yamlとそれ以外のコンテンツファイルをそれぞれ1つずつ特定する
+# Identify one *.meta.yaml file and one content file in tip_dir
 function resolve-tip-files() {
 	setopt local_options err_exit pipe_fail
 	local tip_dir=$1
@@ -30,7 +30,7 @@ function resolve-tip-files() {
 	done
 }
 
-# gist_idが空ならgh gist createで新規作成しmeta.yamlに書き戻す、あればgh gist editで上書きする
+# If gist_id is empty, create a new gist with gh gist create and write it back to meta.yaml; otherwise overwrite with gh gist edit
 function upload-tip() {
 	setopt local_options err_exit pipe_fail
 	local tip_dir=$1
@@ -50,29 +50,29 @@ function upload-tip() {
 		local gist_url="$(gh gist create --public --desc "[Tips] ${title}" "${content_file}" "${meta_file}")"
 		local new_gist_id="${gist_url:t}"
 		yq -i -y --arg gist_id "${new_gist_id}" '.gist_id = $gist_id' "${meta_file}"
-		echo "gistを作成しました: ${gist_url}"
+		echo "Gist created: ${gist_url}"
 	else
 		gh gist edit "${gist_id}" --filename "$(basename "${content_file}")" "${content_file}"
 		gh gist edit "${gist_id}" --filename "$(basename "${meta_file}")" "${meta_file}"
-		echo "gist(${gist_id})を更新しました"
+		echo "Gist (${gist_id}) updated"
 	fi
 }
 
-# 補助関数(tip-editとは別役割)
-# $EDITORでコンテンツファイルを開き、正常終了した場合のみアップロード確認する
-# （$EDITORが異常終了した場合はerr_exitオプションによりここで処理が止まり、アップロードされない）
+# Helper function (distinct role from tip-edit)
+# Opens the content file with $EDITOR and only prompts for upload confirmation on successful exit
+# (If $EDITOR exits abnormally, err_exit halts processing here, so no upload happens)
 function edit-and-maybe-upload() {
 	setopt local_options err_exit pipe_fail
 	local tip_dir=$1 content_file=$2
 
-	if ! gum confirm "${EDITOR}で開きますか？"; then
-		echo "${tip_dir} に作成しました"
+	if ! gum confirm "Open with ${EDITOR}?"; then
+		echo "Created at ${tip_dir}"
 		return
 	fi
 
 	"${EDITOR}" "${tip_dir}/${content_file}"
 
-	if gum confirm "gistにアップロードしますか？"; then
+	if gum confirm "Upload to gist?"; then
 		upload-tip "${tip_dir}"
 	fi
 }
@@ -82,19 +82,19 @@ function tip-new() {
 	local assets_category="$(jq -r '.category | sort | .[]' "${ASSETS_JSON}")"
 	local assets_language="$(jq -r '.language | sort | .[].name' "${ASSETS_JSON}")"
 
-	# 対話開始
+	# Start interactive prompts
 	print-launch-message "Let's Create Tips !" "Choose Tips Option !!"
 
-	local filename="$(gum input --placeholder=ファイル名を入力してください)"
-	local title="$(gum input --placeholder=タイトルを入力してください)"
-	local category="$(gum filter --header=タグを選んでください <<<"${assets_category}")"
+	local filename="$(gum input --placeholder="Enter a filename")"
+	local title="$(gum input --placeholder="Enter a title")"
+	local category="$(gum filter --header="Choose a tag" <<<"${assets_category}")"
 
-	local language="$(gum filter --header=言語を選んでください <<<"${assets_language}")"
+	local language="$(gum filter --header="Choose a language" <<<"${assets_language}")"
 
-	local extension="$(jq -r --arg lang "${language}" '.language[] | select(.name==$lang) | .ext' "${ASSETS_JSON}")" # ファイル拡張子を特定
+	local extension="$(jq -r --arg lang "${language}" '.language[] | select(.name==$lang) | .ext' "${ASSETS_JSON}")" # Determine the file extension
 
 	local created_date="$(date "+%Y-%m-%d")"
-	local category_yaml="[$(echo "${category}" | paste -sd, - | sed 's/,/, /g')]" # yaml形式の配列に変換
+	local category_yaml="[$(echo "${category}" | paste -sd, - | sed 's/,/, /g')]" # Convert to a YAML array
 
 	local tip_name="${created_date}-${filename}"
 	local tip_dir="${TIPS_DIR}/${tip_name}"
@@ -132,7 +132,7 @@ function tip-edit() {
 	local selected_id="$(browse-gist-list --return-column=1)"
 
 	if [[ -z "${selected_id}" ]]; then
-		echo "編集対象が選択されませんでした"
+		echo "No item selected to edit"
 		return
 	fi
 
@@ -147,7 +147,7 @@ function tip-edit() {
 	done
 
 	if [[ -z "${tip_dir}" ]]; then
-		# ローカルに未取得（他PC等でアップロードされた）tipなのでgist_cloneで取得する
+		# Not yet fetched locally (uploaded from another PC etc.), so fetch it with gist clone
 		local tmp_dir="$(mktemp -d)"
 		gh gist clone "${selected_id}" "${tmp_dir}"
 
