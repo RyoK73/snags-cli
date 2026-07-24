@@ -87,7 +87,7 @@ function tip-new() {
 
 	local filename="$(gum input --placeholder=ファイル名を入力してください)"
 	local title="$(gum input --placeholder=タイトルを入力してください)"
-	local category="$(gum filter --header=タグを選んでください --no-limit <<<"${assets_category}")"
+	local category="$(gum filter --header=タグを選んでください <<<"${assets_category}")"
 
 	local language="$(gum filter --header=言語を選んでください <<<"${assets_language}")"
 
