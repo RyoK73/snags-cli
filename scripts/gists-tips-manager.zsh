@@ -87,7 +87,7 @@ function tip-new() {
 
 	local filename="$(gum input --placeholder="Enter a filename")"
 	local title="$(gum input --placeholder="Enter a title")"
-	local category="$(gum filter --header="Choose a tag" <<<"${assets_category}")"
+	local category="$(gum filter --no-limit --header="Choose a category" <<<"${assets_category}")"
 
 	local language="$(gum filter --header="Choose a language" <<<"${assets_language}")"
 
