@@ -68,15 +68,15 @@ English README is available here: [README.md](./README.md)
 ### tip-new — 新しいTipsを作成する
 
 1. `tip-new` を実行すると「Let's Create Tips !」のバナーが表示される
-2. `ファイル名を入力してください` -> ファイル名を入力
-3. `タイトルを入力してください` -> タイトルを入力
-4. `タグを選んでください` -> `./assets/assets.json`の`category`一覧から複数選択（Tab等で複数選択可）
-5. `言語を選んでください` -> `./assets/assets.json`の`language`一覧から1つ選択（本文ファイルの拡張子決定に使うのみで、`meta.yaml`には保存されない）
+2. `Enter a filename` -> ファイル名を入力
+3. `Enter a title` -> タイトルを入力
+4. `Choose a category` -> `./assets/assets.json`の`category`一覧から複数選択（Tab等で複数選択可）
+5. `Choose a language` -> `./assets/assets.json`の`language`一覧から1つ選択（本文ファイルの拡張子決定に使うのみで、`meta.yaml`には保存されない）
 6. `tips/{YYYY-MM-DD}-{ファイル名}/`ディレクトリが作成され、本文ファイルと`{ファイル名}.meta.yaml`が生成される
-7. `${EDITOR}で開きますか？`
-   - `No` -> `{tip_dir} に作成しました`と表示されて終了（ローカルに作成されるのみで、Gistへは未アップロード）
-   - `Yes` -> `$EDITOR`が開き本文を編集。保存して閉じると`gistにアップロードしますか？`と確認され、
-     - `Yes` -> `gh gist create`で新規Gistが作成され、発行された`gist_id`が`meta.yaml`に書き戻される。`gistを作成しました: {url}`と表示される
+7. `Open with ${EDITOR}?`
+   - `No` -> `Created at {tip_dir}`と表示されて終了（ローカルに作成されるのみで、Gistへは未アップロード）
+   - `Yes` -> `$EDITOR`が開き本文を編集。保存して閉じると`Upload to gist?`と確認され、
+     - `Yes` -> `gh gist create`で新規Gistが作成され、発行された`gist_id`が`meta.yaml`に書き戻される。`Gist created: {url}`と表示される
      - `No` -> アップロードせず終了
 
 ### tip-list — 作成済みのTips一覧を見る
@@ -89,7 +89,7 @@ English README is available here: [README.md](./README.md)
 1. `tip-edit` を実行すると「Edit Tips !」のバナーが表示される
 2. `tip-list`と同じ一覧表が表示されるので、編集したいTipsを1つ選択する
 3. ローカルに該当するTipsディレクトリがあればそれを使用。無ければ（他PCで作成されたTipsなど）`gh gist clone`で取得し、`tips/`配下に配置される
-4. 以降は`tip-new`の手順6-7と同様の編集フローに入る。既存Gistへの更新となるため、アップロード時は`gh gist edit`が使われ、`gist({id})を更新しました`と表示される
+4. 以降は`tip-new`の手順6-7と同様の編集フローに入る。既存Gistへの更新となるため、アップロード時は`gh gist edit`が使われ、`Gist ({id}) updated`と表示される
 
 ### ユースケース別のコマンド選択
 
