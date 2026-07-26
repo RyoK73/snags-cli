@@ -5,6 +5,7 @@ typeset -g REPO_DIR="$(realpath "${SCRIPT_DIR}/../")"
 typeset -g ASSETS_JSON="${REPO_DIR}/assets/assets.json"
 typeset -g TIPS_DIR="${REPO_DIR}/tips"
 typeset -g TIPS_GIST_FILTER='\[Tips\]'
+typeset -g meta_file content_file
 
 function print-launch-message() {
 	setopt local_options err_exit pipe_fail warn_create_global
@@ -23,9 +24,9 @@ function resolve-tip-files() {
 	local f
 	for f in "${tip_dir}"/*(.N); do
 		if [[ "$f" == *.meta.yaml ]]; then
-			echo "meta:${f}"
+			meta_file="${f}"
 		else
-			echo "content:${f}"
+			content_file="${f}"
 		fi
 	done
 }
@@ -34,14 +35,7 @@ function resolve-tip-files() {
 function upload-tip() {
 	setopt local_options err_exit pipe_fail warn_create_global
 	local tip_dir=$1
-	local meta_file content_file line
-
-	while IFS= read -r line; do
-		case "${line}" in
-		meta:*) meta_file="${line#meta:}" ;;
-		content:*) content_file="${line#content:}" ;;
-		esac
-	done < <(resolve-tip-files "${tip_dir}")
+	resolve-tip-files "${tip_dir}"
 
 	local gist_id="$(yq -r '.gist_id' "${meta_file}")"
 	local title="$(yq -r '.title' "${meta_file}")"
@@ -151,29 +145,18 @@ function tip-edit() {
 		local tmp_dir="$(mktemp -d)"
 		gh gist clone "${selected_id}" "${tmp_dir}"
 
-		local remote_meta remote_content line
-		while IFS= read -r line; do
-			case "${line}" in
-			meta:*) remote_meta="${line#meta:}" ;;
-			content:*) remote_content="${line#content:}" ;;
-			esac
-		done < <(resolve-tip-files "${tmp_dir}")
+		# resolve remote meta,content files
+		resolve-tip-files "${tmp_dir}"
 
-		local created_at="$(yq -r '.created_at' "${remote_meta}")"
-		local stem="$(basename "${remote_content}" | sed -E 's/\.[^.]+$//')"
+		local created_at="$(yq -r '.created_at' "${meta_file}")"
+		local stem="$(basename "${content_file}" | sed -E 's/\.[^.]+$//')"
 		tip_dir="${TIPS_DIR}/${created_at}-${stem}"
 
 		mkdir -p "${TIPS_DIR}"
 		mv "${tmp_dir}" "${tip_dir}"
 	fi
 
-	local meta_file content_file line
-	while IFS= read -r line; do
-		case "${line}" in
-		meta:*) meta_file="${line#meta:}" ;;
-		content:*) content_file="${line#content:}" ;;
-		esac
-	done < <(resolve-tip-files "${tip_dir}")
+	resolve-tip-files "${tip_dir}"
 
 	edit-and-maybe-upload "${tip_dir}" "$(basename "${content_file}")"
 }
