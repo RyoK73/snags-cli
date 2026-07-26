@@ -9,7 +9,7 @@ SOURCE_LINE="source \"${MANAGER_SCRIPT}\""
 
 if [[ ! -f "${ZSHRC}" ]]; then
   echo ".zshrc not found"
-  if gum confirm "Create .zshrc?";then
+  if gum confirm "Create .zshrc?"; then
     touch $HOME/.zshrc
     echo "Created .zshrc at ${HOME}"
   else
@@ -25,6 +25,6 @@ else
     echo ""
     echo "# gists-tips-manager"
     echo "${SOURCE_LINE}"
-  } >> "${ZSHRC}"
+  } >>"${ZSHRC}"
   echo "Added: ${SOURCE_LINE} to ${ZSHRC}"
 fi

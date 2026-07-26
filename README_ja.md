@@ -2,7 +2,7 @@
 
 English README is available here: [README.md](./README.md)
 
-CLIでGitHub Gist作成を簡略化し、開発中の気づいたこと・メモなどを気軽にTipsとして登録することができる
+作成理由・背景も含めた小さなTips記事をGithub Gistとして手軽に作成できる対話式CLI
 
 ## このリポジトリで得られるもの
 
@@ -12,7 +12,7 @@ CLIでGitHub Gist作成を簡略化し、開発中の気づいたこと・メモ
 
 ## インストール方法
 
-1. `sudo pacman -S gum github-cli`
+1. `sudo pacman -S gum github-cli yq jq`
 2. `git clone https://github.com/RyoK73/gists-tips-manager.git`
 3. `cd gists-tips-manager`
 4. `./scripts/setup-manager.zsh`
@@ -47,6 +47,8 @@ CLIでGitHub Gist作成を簡略化し、開発中の気づいたこと・メモ
 
 - [gum](https://github.com/charmbracelet/gum.git)
 - [GitHub CLI](https://github.com/cli/cli.git)
+- [jq](https://github.com/jqlang/jq)
+- [yq (kislyuk/yq)](https://github.com/kislyuk/yq) — jqラッパー形式のYAMLパーサー。meta.yamlの読み書きに使用
 
 ## コマンド
 

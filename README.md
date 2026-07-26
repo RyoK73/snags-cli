@@ -2,7 +2,7 @@
 
 Japanese README is available here: [README_ja.md](./README_ja.md)
 
-A CLI that streamlines creating GitHub Gists, so you can quickly jot down things you notice or learn while developing and register them as Tips.
+An interactive CLI that lets you easily create small Tips articles—including the reasoning and background behind them—as GitHub Gists.
 
 ## What you get from this repository
 
@@ -12,7 +12,7 @@ A CLI that streamlines creating GitHub Gists, so you can quickly jot down things
 
 ## Installation
 
-1. `sudo pacman -S gum github-cli`
+1. `sudo pacman -S gum github-cli yq jq`
 2. `git clone https://github.com/RyoK73/gists-tips-manager.git`
 3. `cd gists-tips-manager`
 4. `./scripts/setup-manager.zsh`
@@ -47,6 +47,8 @@ A CLI that streamlines creating GitHub Gists, so you can quickly jot down things
 
 - [gum](https://github.com/charmbracelet/gum.git)
 - [GitHub CLI](https://github.com/cli/cli.git)
+- [jq](https://github.com/jqlang/jq)
+- [yq (kislyuk/yq)](https://github.com/kislyuk/yq) — a jq-based YAML processor, used to read/write `meta.yaml`
 
 ## Commands
 

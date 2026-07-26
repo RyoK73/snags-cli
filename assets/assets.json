@@ -1,4 +1,24 @@
 {
-  "tags": ["cheatsheet", "template", "memo"],
-  "lang": ["bash", "typescript", "python", "javascript"]
+  "category": [
+    "cheatsheet",
+    "template",
+    "memo",
+    "howto",
+    "troubleshooting",
+    "review",
+    "setting"
+  ],
+  "language": [
+    { "name": "bash", "ext": "sh" },
+    { "name": "css", "ext": "css" },
+    { "name": "go", "ext": "go" },
+    { "name": "html", "ext": "html" },
+    { "name": "markdown", "ext": "md" },
+    { "name": "java", "ext": "java" },
+    { "name": "javascript", "ext": "js" },
+    { "name": "python", "ext": "py" },
+    { "name": "ruby", "ext": "rb" },
+    { "name": "rust", "ext": "rs" },
+    { "name": "typescript", "ext": "ts" }
+  ]
 }
