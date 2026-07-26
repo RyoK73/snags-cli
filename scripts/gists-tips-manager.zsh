@@ -8,7 +8,8 @@ typeset -g TIPS_GIST_FILTER='\[Tips\]'
 typeset -g meta_file content_file
 
 function print-launch-message() {
-	setopt local_options err_exit pipe_fail warn_create_global
+	setopt local_options pipe_fail warn_create_global
+
 	local title=$1 subtitle=$2
 	gum style \
 		--foreground="#ffffff" --border-foreground="#00b5cb" \
@@ -19,7 +20,8 @@ function print-launch-message() {
 
 # Identify one *.meta.yaml file and one content file in tip_dir
 function resolve-tip-files() {
-	setopt local_options err_exit pipe_fail warn_create_global
+	setopt local_options pipe_fail warn_create_global
+
 	local tip_dir=$1
 	local f
 	for f in "${tip_dir}"/*(.N); do
@@ -33,7 +35,8 @@ function resolve-tip-files() {
 
 # If gist_id is empty, create a new gist with gh gist create and write it back to meta.yaml; otherwise overwrite with gh gist edit
 function upload-tip() {
-	setopt local_options err_exit pipe_fail warn_create_global
+	setopt local_options pipe_fail warn_create_global
+
 	local tip_dir=$1
 	resolve-tip-files "${tip_dir}"
 
@@ -41,7 +44,8 @@ function upload-tip() {
 	local title="$(yq -r '.title' "${meta_file}")"
 
 	if [[ -z "${gist_id}" || "${gist_id}" == "null" ]]; then
-		local gist_url="$(gh gist create --public --desc "[Tips] ${title}" "${content_file}" "${meta_file}")"
+		local gist_url
+		gist_url="$(gh gist create --public --desc "[Tips] ${title}" "${content_file}" "${meta_file}")"
 		local new_gist_id="${gist_url:t}"
 		yq -i -y --arg gist_id "${new_gist_id}" '.gist_id = $gist_id' "${meta_file}"
 		echo "Gist created: ${gist_url}"
@@ -54,9 +58,10 @@ function upload-tip() {
 
 # Helper function (distinct role from tip-edit)
 # Opens the content file with $EDITOR and only prompts for upload confirmation on successful exit
-# (If $EDITOR exits abnormally, err_exit halts processing here, so no upload happens)
+# (If $EDITOR exits abnormally,  halts processing here, so no upload happens)
 function edit-and-maybe-upload() {
-	setopt local_options err_exit pipe_fail warn_create_global
+	setopt local_options pipe_fail warn_create_global
+
 	local tip_dir=$1 content_file=$2
 
 	if ! gum confirm "Open with ${EDITOR}?"; then
@@ -72,20 +77,43 @@ function edit-and-maybe-upload() {
 }
 
 function tip-new() {
-	setopt local_options err_exit pipe_fail warn_create_global
+	setopt local_options pipe_fail warn_create_global
 	local assets_category="$(jq -r '.category | sort | .[]' "${ASSETS_JSON}")"
 	local assets_language="$(jq -r '.language | sort | .[].name' "${ASSETS_JSON}")"
 
 	# Start interactive prompts
 	print-launch-message "Let's Create Tips !" "Choose Tips Option !!"
 
-	local filename="$(gum input --placeholder="Enter a filename")"
-	local title="$(gum input --placeholder="Enter a title")"
-	local category="$(gum filter --no-limit --header="Choose a category" <<<"${assets_category}")"
+	local filename
+	filename="$(gum input --placeholder="Enter a filename")" || {
+		echo "canceled"
+		return
+	}
 
-	local language="$(gum filter --header="Choose a language" <<<"${assets_language}")"
+	local title
+	title="$(gum input --placeholder="Enter a title")" || {
+		echo "canceled"
+		return
+	}
 
-	local extension="$(jq -r --arg lang "${language}" '.language[] | select(.name==$lang) | .ext' "${ASSETS_JSON}")" # Determine the file extension
+	local category
+	category="$(gum filter --no-limit --header="Choose a category" <<<"${assets_category}")" || {
+		echo "canceled"
+		return
+	}
+
+	local language
+	language="$(gum filter --header="Choose a language" <<<"${assets_language}")" || {
+		echo "canceled"
+		return
+	}
+
+	local extension
+	extension="$(jq -r --arg lang "${language}" '.language[] | select(.name==$lang) | .ext' "${ASSETS_JSON}")" || {
+		echo "canceled"
+		return
+	}
+	# Determine the file extension
 
 	local created_date="$(date "+%Y-%m-%d")"
 	local category_yaml="[$(echo "${category}" | paste -sd, - | sed 's/,/, /g')]" # Convert to a YAML array
@@ -106,24 +134,25 @@ function tip-new() {
 }
 
 function browse-gist-list() {
-	setopt local_options err_exit pipe_fail warn_create_global
+	setopt local_options pipe_fail warn_create_global
 	gh gist list --filter "${TIPS_GIST_FILTER}" |
 		gum table --separator=$'\t' --columns="ID,Description,Files,Visibility,UpdatedAt" "$@"
 
 }
 
 function tip-list() {
-	setopt local_options err_exit pipe_fail warn_create_global
+	setopt local_options pipe_fail warn_create_global
 	print-launch-message "Your Tips !" "Browse Tips List !!"
 
 	browse-gist-list --print
 }
 
 function tip-edit() {
-	setopt local_options err_exit pipe_fail warn_create_global
+	setopt local_options pipe_fail warn_create_global
 	print-launch-message "Edit Tips !" "Choose Tips to Edit !!"
 
-	local selected_id="$(browse-gist-list --return-column=1)"
+	local selected_id
+	selected_id="$(browse-gist-list --return-column=1)"
 
 	if [[ -z "${selected_id}" ]]; then
 		echo "No item selected to edit"
