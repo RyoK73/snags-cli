@@ -45,20 +45,29 @@ function upload-tip() {
 
 	if [[ -z "${gist_id}" || "${gist_id}" == "null" ]]; then
 		local gist_url
-		gist_url="$(gh gist create --public --desc "[Tips] ${title}" "${content_file}" "${meta_file}")"
+		gist_url="$(gh gist create --public --desc "[Tips] ${title}" "${content_file}" "${meta_file}")" || {
+			echo "Error: Failed to create gist"
+			return
+		}
 		local new_gist_id="${gist_url:t}"
 		yq -i -y --arg gist_id "${new_gist_id}" '.gist_id = $gist_id' "${meta_file}"
 		echo "Gist created: ${gist_url}"
 	else
-		gh gist edit "${gist_id}" --filename "$(basename "${content_file}")" "${content_file}"
-		gh gist edit "${gist_id}" --filename "$(basename "${meta_file}")" "${meta_file}"
+		gh gist edit "${gist_id}" --filename "$(basename "${content_file}")" "${content_file}" || {
+			echo "Error: Failed to update gist content"
+			return
+		}
+		gh gist edit "${gist_id}" --filename "$(basename "${meta_file}")" "${meta_file}" || {
+			echo "Error: Failed to update gist metadata"
+			return
+		}
 		echo "Gist (${gist_id}) updated"
 	fi
 }
 
 # Helper function (distinct role from tip-edit)
 # Opens the content file with $EDITOR and only prompts for upload confirmation on successful exit
-# (If $EDITOR exits abnormally,  halts processing here, so no upload happens)
+# (If $EDITOR exits abnormally, halts processing here, so no upload happens)
 function edit-and-maybe-upload() {
 	setopt local_options pipe_fail warn_create_global
 
@@ -69,7 +78,10 @@ function edit-and-maybe-upload() {
 		return
 	fi
 
-	"${EDITOR}" "${tip_dir}/${content_file}"
+	"${EDITOR}" "${tip_dir}/${content_file}" || {
+		echo "Error: Editor exited abnormally"
+		return
+	}
 
 	if gum confirm "Upload to gist?"; then
 		upload-tip "${tip_dir}"
@@ -110,7 +122,7 @@ function tip-new() {
 
 	local extension
 	extension="$(jq -r --arg lang "${language}" '.language[] | select(.name==$lang) | .ext' "${ASSETS_JSON}")" || {
-		echo "canceled"
+		echo "Error: Failed to resolve extension"
 		return
 	}
 	# Determine the file extension
@@ -138,6 +150,10 @@ function browse-gist-list() {
 	gh gist list --filter "${TIPS_GIST_FILTER}" |
 		gum table --separator=$'\t' --columns="ID,Description,Files,Visibility,UpdatedAt" "$@"
 
+	if ((pipestatus[1] != 0)); then
+		echo "Error: Failed to fetch gist list"
+		return 1
+	fi
 }
 
 function tip-list() {
@@ -172,7 +188,10 @@ function tip-edit() {
 	if [[ -z "${tip_dir}" ]]; then
 		# Not yet fetched locally (uploaded from another PC etc.), so fetch it with gist clone
 		local tmp_dir="$(mktemp -d)"
-		gh gist clone "${selected_id}" "${tmp_dir}"
+		gh gist clone "${selected_id}" "${tmp_dir}" || {
+			echo "Error: Failed to clone gist"
+			return
+		}
 
 		# resolve remote meta,content files
 		resolve-tip-files "${tmp_dir}"
