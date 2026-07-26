@@ -7,7 +7,7 @@ typeset -g TIPS_DIR="${REPO_DIR}/tips"
 typeset -g TIPS_GIST_FILTER='\[Tips\]'
 
 function print-launch-message() {
-	setopt local_options err_exit pipe_fail
+	setopt local_options err_exit pipe_fail warn_create_global
 	local title=$1 subtitle=$2
 	gum style \
 		--foreground="#ffffff" --border-foreground="#00b5cb" \
@@ -18,7 +18,7 @@ function print-launch-message() {
 
 # Identify one *.meta.yaml file and one content file in tip_dir
 function resolve-tip-files() {
-	setopt local_options err_exit pipe_fail
+	setopt local_options err_exit pipe_fail warn_create_global
 	local tip_dir=$1
 	local f
 	for f in "${tip_dir}"/*(.N); do
@@ -32,7 +32,7 @@ function resolve-tip-files() {
 
 # If gist_id is empty, create a new gist with gh gist create and write it back to meta.yaml; otherwise overwrite with gh gist edit
 function upload-tip() {
-	setopt local_options err_exit pipe_fail
+	setopt local_options err_exit pipe_fail warn_create_global
 	local tip_dir=$1
 	local meta_file content_file line
 
@@ -62,7 +62,7 @@ function upload-tip() {
 # Opens the content file with $EDITOR and only prompts for upload confirmation on successful exit
 # (If $EDITOR exits abnormally, err_exit halts processing here, so no upload happens)
 function edit-and-maybe-upload() {
-	setopt local_options err_exit pipe_fail
+	setopt local_options err_exit pipe_fail warn_create_global
 	local tip_dir=$1 content_file=$2
 
 	if ! gum confirm "Open with ${EDITOR}?"; then
@@ -78,7 +78,7 @@ function edit-and-maybe-upload() {
 }
 
 function tip-new() {
-	setopt local_options err_exit pipe_fail
+	setopt local_options err_exit pipe_fail warn_create_global
 	local assets_category="$(jq -r '.category | sort | .[]' "${ASSETS_JSON}")"
 	local assets_language="$(jq -r '.language | sort | .[].name' "${ASSETS_JSON}")"
 
@@ -112,21 +112,21 @@ function tip-new() {
 }
 
 function browse-gist-list() {
-	setopt local_options err_exit pipe_fail
+	setopt local_options err_exit pipe_fail warn_create_global
 	gh gist list --filter "${TIPS_GIST_FILTER}" |
 		gum table --separator=$'\t' --columns="ID,Description,Files,Visibility,UpdatedAt" "$@"
 
 }
 
 function tip-list() {
-	setopt local_options err_exit pipe_fail
+	setopt local_options err_exit pipe_fail warn_create_global
 	print-launch-message "Your Tips !" "Browse Tips List !!"
 
 	browse-gist-list --print
 }
 
 function tip-edit() {
-	setopt local_options err_exit pipe_fail
+	setopt local_options err_exit pipe_fail warn_create_global
 	print-launch-message "Edit Tips !" "Choose Tips to Edit !!"
 
 	local selected_id="$(browse-gist-list --return-column=1)"
