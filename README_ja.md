@@ -1,6 +1,8 @@
-## gists-tips-manager
+# SNAGS
 
 English README is available here: [README.md](./README.md)
+
+**Snags the Note, Archive, Gist, and Snippet.**
 
 作成理由・背景も含めた小さなTips記事をGithub Gistとして手軽に作成できる対話式CLI
 

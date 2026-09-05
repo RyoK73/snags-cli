@@ -1,6 +1,8 @@
-## gists-tips-manager
+# SNAGS
 
 Japanese README is available here: [README_ja.md](./README_ja.md)
+
+**Snags the Note, Archive, Gist, and Snippet.**
 
 An interactive CLI that lets you easily create small Tips articles—including the reasoning and background behind them—as GitHub Gists.
 
