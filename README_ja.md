@@ -1,4 +1,4 @@
-# SNAGS
+# SNAGS CLI
 
 English README is available here: [README.md](./README.md)
 

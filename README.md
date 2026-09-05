@@ -1,4 +1,4 @@
-# SNAGS
+# SNAGS CLI
 
 Japanese README is available here: [README_ja.md](./README_ja.md)
 
