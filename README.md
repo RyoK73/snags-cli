@@ -1,5 +1,11 @@
 # SNAGS CLI
 
+---
+
+Under development...
+
+---
+
 Japanese README is available here: [README_ja.md](./README_ja.md)
 
 **Snags the Note, Archive, Gist, and Snippet.**

@@ -1,5 +1,11 @@
 # SNAGS CLI
 
+---
+
+開発中...
+
+---
+
 English README is available here: [README.md](./README.md)
 
 **Snags the Note, Archive, Gist, and Snippet.**
