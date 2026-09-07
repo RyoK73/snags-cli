@@ -2,14 +2,29 @@
   "name": "snags-cli-feat-change-typescript-project",
   "version": "1.0.0",
   "description": "",
-  "main": "index.js",
-  "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
-    "check": "eslint && tsc --noEmit"
+  "main": "./dist/index.js",
+  "bin": {
+    "snag-cli": "./dist/index.js"
   },
-  "keywords": [],
-  "author": "",
-  "license": "ISC",
+  "files": [
+    "package.json",
+    "README",
+    "./dist/index.js",
+    "LICENSE"
+  ],
+  "author": "RyoK73 (https://github.com/RyoK73)",
+  "keywords": [
+    "node",
+    "cli",
+    "snags",
+    "gist"
+  ],
+  "scripts": {
+    "test": "pnpm exec vitest",
+    "check": "eslint && tsc --noEmit",
+    "build": "tsc --project tsconfig.build.json && tsc-alias -p tsconfig.build.json"
+  },
+  "license": "MIT",
   "devEngines": {
     "packageManager": {
       "name": "pnpm",
@@ -20,13 +35,16 @@
   "packageManager": "pnpm@11.24.0",
   "type": "module",
   "devDependencies": {
+    "@eslint/js": "^10.0.1",
     "@types/node": "^26.4.1",
+    "@typescript/native": "npm:typescript@^7.0.2",
     "eslint": "^10.10.0",
+    "globals": "^17.12.0",
+    "jiti": "^2.7.0",
     "tsc-alias": "^1.9.4",
-    "typescript-eslint": "^8.69.0",
-    "vitest": "^5.0.0",
     "typescript": "npm:@typescript/typescript6@^6.0.2",
-    "@typescript/native": "npm:typescript@^7.0.2"
+    "typescript-eslint": "^8.69.0",
+    "vitest": "^5.0.0"
   },
   "dependencies": {
     "@clack/prompts": "^1.7.0",
