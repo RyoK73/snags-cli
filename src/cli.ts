@@ -1,16 +1,10 @@
-import { defineCommand, runMain } from "citty";
-import consola from "consola";
+import { defineCommand } from "citty";
 
-const cliVersion = "0.0.1";
 const main = defineCommand({
   meta: {
     name: "snags-cli",
-    version: cliVersion,
+    version: "0.0.1",
     description: "My Awesome CLI App",
   },
-  run() {
-    consola.success("Hello!");
-  },
 });
-
 export default main;
