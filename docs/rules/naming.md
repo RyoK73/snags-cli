@@ -5,3 +5,4 @@
 - 関数: `lowerCamelCase`
 - 型(type/interface): `UpperCamelCase`
 - 定数: `UPPER_SNAKE_CASE`
+- ファイル・ディレクトリ名: `kebab-case`
