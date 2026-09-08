@@ -9,7 +9,7 @@
   "files": [
     "package.json",
     "README.md",
-    "./dist/snags.js",
+    "./dist/**",
     "LICENSE"
   ],
   "author": "RyoK73 (https://github.com/RyoK73)",
