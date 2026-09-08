@@ -3,4 +3,4 @@
 import { runMain } from "citty";
 import main from "@/cli.js";
 
-runMain(main);
+await runMain(main);
