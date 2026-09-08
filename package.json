@@ -2,14 +2,14 @@
   "name": "snags-cli-feat-change-typescript-project",
   "version": "1.0.0",
   "description": "",
-  "main": "./dist/index.js",
+  "main": "./dist/snags.js",
   "bin": {
     "snags": "./dist/snags.js"
   },
   "files": [
     "package.json",
-    "README",
-    "./dist/index.js",
+    "README.md",
+    "./dist/snags.js",
     "LICENSE"
   ],
   "author": "RyoK73 (https://github.com/RyoK73)",
