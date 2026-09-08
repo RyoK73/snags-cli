@@ -22,7 +22,8 @@
   "scripts": {
     "test": "pnpm exec vitest",
     "check": "eslint && tsc --noEmit",
-    "build": "tsc --project tsconfig.build.json && tsc-alias -p tsconfig.build.json"
+    "clean": "rm -rf ./dist",
+    "build": "pnpm clean && tsc --project tsconfig.build.json && tsc-alias -p tsconfig.build.json"
   },
   "license": "MIT",
   "devEngines": {
