@@ -2,7 +2,7 @@
 // [x] config.jsonのclientIDを返す
 // [x] config.jsonが存在しない場合、Errorをthrowする
 // [x] clientIdが存在しない場合、"Errorをthrowする
-import getClientId from "./read-config.js";
+import getClientId from "./configGateway.js";
 import fs from "node:fs";
 
 it("config.jsonのclientIDを返す", () => {
