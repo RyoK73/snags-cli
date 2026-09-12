@@ -1,16 +1,17 @@
-import { getTokenSet } from "@/gateway/osKeyringGateway.js";
+import { getTokenSet, setTokenSet } from "@/gateway/osKeyringGateway.js";
+import type { TokenSet } from "@/gateway/osKeyringGateway.types.js";
 import keytar from "keytar";
 
 vi.spyOn(keytar, "getPassword");
+vi.spyOn(keytar, "setPassword");
 
+const tokenSetEntity = {
+  accessToken: "xxxx",
+  accessTokenExpiredAt: "xxxx",
+  refreshToken: "xxxx",
+  refreshTokenExpiredAt: "xxxx",
+};
 describe("getTokenSet", () => {
-  const tokenSetEntity = {
-    accessToken: "xxxx",
-    accessTokenExpiredAt: "xxxx",
-    refreshToken: "xxxx",
-    refreshTokenExpiredAt: "xxxx",
-  };
-
   it("should return type TokenSet object", async () => {
     vi.mocked(keytar.getPassword).mockResolvedValue(
       JSON.stringify(tokenSetEntity),
@@ -41,6 +42,35 @@ describe("getTokenSet", () => {
     vi.mocked(keytar.getPassword).mockResolvedValue("{egdata:xxxx}");
 
     await expect(getTokenSet()).rejects.toThrow();
+  });
+});
+
+describe("setTokenSet", () => {
+  it("should return void", async () => {
+    vi.mocked(keytar.setPassword).mockResolvedValue(undefined);
+
+    await expect(setTokenSet(tokenSetEntity)).resolves.toBeUndefined();
+  });
+  it("should return error when argument isn't type TokenSet obj", async () => {
+    vi.mocked(keytar.setPassword).mockResolvedValue(undefined);
+
+    const wrongTokenSet = { wrongValue: "invalid" } as unknown as TokenSet;
+
+    await expect(setTokenSet(wrongTokenSet)).rejects.toThrow();
+  });
+
+  it("should return error when argument type is any", async () => {
+    vi.mocked(keytar.setPassword).mockResolvedValue(undefined);
+
+    const anyTypeArgument = "xx" as any;
+
+    await expect(setTokenSet(anyTypeArgument)).rejects.toThrow();
+  });
+
+  it("should return error when keytar.setPassword failed", async () => {
+    vi.mocked(keytar.setPassword).mockRejectedValue(new Error());
+
+    await expect(setTokenSet(tokenSetEntity)).rejects.toThrow();
   });
 });
 

@@ -14,4 +14,9 @@ const getTokenSet = async (): Promise<TokenSet | boolean> => {
   return tokenSet;
 };
 
-export { getTokenSet };
+const setTokenSet = async (tokenSet: TokenSet): Promise<void> => {
+  tokenSetSchema.parse(tokenSet);
+  await keytar.setPassword(userService, userAccount, JSON.stringify(tokenSet));
+};
+
+export { getTokenSet, setTokenSet };
