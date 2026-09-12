@@ -1,4 +1,4 @@
-import main from "@/cli.js";
+import main from "@/cmd/cli.js";
 
 it("main.metaが必須プロパティを持っている", () => {
   expect(main.meta).toHaveProperty("name");
