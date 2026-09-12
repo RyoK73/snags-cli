@@ -1,9 +1,14 @@
-import { getTokenSet, setTokenSet } from "@/gateway/osKeyringGateway.js";
+import {
+  getTokenSet,
+  setTokenSet,
+  deleteTokenSet,
+} from "@/gateway/osKeyringGateway.js";
 import type { TokenSet } from "@/gateway/osKeyringGateway.types.js";
 import keytar from "keytar";
 
 vi.spyOn(keytar, "getPassword");
 vi.spyOn(keytar, "setPassword");
+vi.spyOn(keytar, "deletePassword");
 
 const tokenSetEntity = {
   accessToken: "xxxx",
@@ -71,6 +76,24 @@ describe("setTokenSet", () => {
     vi.mocked(keytar.setPassword).mockRejectedValue(new Error());
 
     await expect(setTokenSet(tokenSetEntity)).rejects.toThrow();
+  });
+});
+
+describe("deleteTokenSet", () => {
+  it("should return true", async () => {
+    vi.mocked(keytar.deletePassword).mockResolvedValue(true);
+
+    const isDeleted = await deleteTokenSet();
+
+    expect(isDeleted).toBe(true);
+  });
+
+  it("should return false when the password hasn't exist yet", async () => {
+    vi.mocked(keytar.deletePassword).mockResolvedValue(false);
+
+    const isDeleted = await deleteTokenSet();
+
+    expect(isDeleted).toBe(false);
   });
 });
 

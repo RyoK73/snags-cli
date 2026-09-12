@@ -19,4 +19,8 @@ const setTokenSet = async (tokenSet: TokenSet): Promise<void> => {
   await keytar.setPassword(userService, userAccount, JSON.stringify(tokenSet));
 };
 
-export { getTokenSet, setTokenSet };
+const deleteTokenSet = async (): Promise<boolean> => {
+  return keytar.deletePassword(userService, userAccount);
+};
+
+export { getTokenSet, setTokenSet, deleteTokenSet };
