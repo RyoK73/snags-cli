@@ -20,21 +20,13 @@
     "gist"
   ],
   "scripts": {
-    "test": "pnpm exec vitest",
+    "test": "vitest",
     "test:coverage": "pnpm exec vitest --coverage",
     "check": "eslint && tsc --noEmit",
     "clean": "rm -rf ./dist",
     "build": "pnpm clean && tsc --project tsconfig.build.json && tsc-alias -p tsconfig.build.json"
   },
   "license": "MIT",
-  "devEngines": {
-    "packageManager": {
-      "name": "pnpm",
-      "version": "12.3.4",
-      "onFail": "download"
-    }
-  },
-  "packageManager": "pnpm@12.3.4",
   "type": "module",
   "devDependencies": {
     "@eslint/js": "^10.0.1",
