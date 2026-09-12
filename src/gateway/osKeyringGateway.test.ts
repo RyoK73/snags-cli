@@ -12,7 +12,7 @@ const tokenSetEntity = {
   refreshTokenExpiredAt: "xxxx",
 };
 describe("getTokenSet", () => {
-  it("should return type TokenSet object", async () => {
+  it("should return a TokenSet object", async () => {
     vi.mocked(keytar.getPassword).mockResolvedValue(
       JSON.stringify(tokenSetEntity),
     );
@@ -30,7 +30,7 @@ describe("getTokenSet", () => {
     expect(tokenSet).toBe(false);
   });
 
-  it("should return error obj when stored data is valid", async () => {
+  it("should throw an error when stored data is invalid", async () => {
     vi.mocked(keytar.getPassword).mockResolvedValue(
       "{}}}}}wrongValue:wrongValue",
     );
@@ -38,7 +38,7 @@ describe("getTokenSet", () => {
     await expect(getTokenSet()).rejects.toThrow();
   });
 
-  it("should return error obj when stored data isn't compatible TokenSet obj", async () => {
+  it("should throw an error when stored data isn't a valid TokenSet object", async () => {
     vi.mocked(keytar.getPassword).mockResolvedValue("{egdata:xxxx}");
 
     await expect(getTokenSet()).rejects.toThrow();
@@ -51,7 +51,7 @@ describe("setTokenSet", () => {
 
     await expect(setTokenSet(tokenSetEntity)).resolves.toBeUndefined();
   });
-  it("should return error when argument isn't type TokenSet obj", async () => {
+  it("should throw an error when the argument isn't a TokenSet object", async () => {
     vi.mocked(keytar.setPassword).mockResolvedValue(undefined);
 
     const wrongTokenSet = { wrongValue: "invalid" } as unknown as TokenSet;
@@ -59,7 +59,7 @@ describe("setTokenSet", () => {
     await expect(setTokenSet(wrongTokenSet)).rejects.toThrow();
   });
 
-  it("should return error when argument type is any", async () => {
+  it("should throw an error when the argument type is any", async () => {
     vi.mocked(keytar.setPassword).mockResolvedValue(undefined);
 
     const anyTypeArgument = "xx" as any;
@@ -67,7 +67,7 @@ describe("setTokenSet", () => {
     await expect(setTokenSet(anyTypeArgument)).rejects.toThrow();
   });
 
-  it("should return error when keytar.setPassword failed", async () => {
+  it("should throw an error when keytar.setPassword fails", async () => {
     vi.mocked(keytar.setPassword).mockRejectedValue(new Error());
 
     await expect(setTokenSet(tokenSetEntity)).rejects.toThrow();
